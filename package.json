@@ -1,6 +1,6 @@
 {
-  "name": "bloody-tears",
-  "productName": "bloody-tears",
+  "name": "nessmith",
+  "productName": "nessmith",
   "version": "0.0.1",
   "description": "My Electron application description",
   "main": ".webpack/main",
@@ -24,7 +24,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "bloody_tears"
+            "name": "nessmith"
           }
         },
         {
