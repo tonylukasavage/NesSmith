@@ -1,9 +1,10 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { Button } from 'antd';
+import './App.css';
 
 class App extends React.Component {
 	render() {
-		return <h2>Hello from React!!</h2>;
+		return <div><h2>Hello from React!!</h2><Button type="primary">Button</Button></div>;
 	}
 }
 
