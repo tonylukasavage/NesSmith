@@ -8,9 +8,21 @@ import {
 import SpriteEditor from './SpriteEditor';
 import './App.css';
 
+const { ipcRenderer } = window.require('electron');
 const { Header, Content, Footer, Sider } = Layout;
 
 class App extends React.Component {
+	state = {
+		rombuffer: null
+	}
+
+	componentDidMount() {
+		ipcRenderer.on('rombuffer', (evt, rombuffer) => {
+			console.log('holyshit');
+			console.log(rombuffer);
+		});
+	}
+
 	render() {
 		return <Layout hasSider>
 		<Sider

@@ -1,6 +1,8 @@
 const { app, dialog, BrowserWindow, Menu } = require('electron');
 const fs = require('fs').promises;
 
+let mainWindow;
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   // eslint-disable-line global-require
@@ -9,10 +11,14 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: 'NES Smith',
     width: 800,
     height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   });
 
   // and load the index.html of the app.
@@ -75,10 +81,9 @@ const template = [
               { name: 'All Files', extensions: ['*'] }
             ]
           });
-          console.log(result);
           const romfile = result.filePaths[0];
           const rombuffer = await fs.readFile(romfile);
-          console.log(rombuffer);
+          mainWindow.webContents.send('rombuffer', rombuffer);
         } 
       },
       { type: 'separator' },
