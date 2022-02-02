@@ -1,5 +1,5 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+const { app, dialog, BrowserWindow, Menu } = require('electron');
+const fs = require('fs').promises;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,6 +10,7 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: 'NES Smith',
     width: 800,
     height: 600,
   });
@@ -45,3 +46,46 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+const isMac = process.platform === 'darwin'
+const template = [
+  ...(isMac ? [{
+    label: 'NES Smith',
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  {
+    label: 'File',
+    submenu: [
+      { 
+        label: 'Open ROM',
+        click: async () => {
+          const result = await dialog.showOpenDialog({
+            title: 'Open NES ROM',
+            filters: [
+              { name: 'NES ROMs', extensions: ['nes'] },
+              { name: 'All Files', extensions: ['*'] }
+            ]
+          });
+          console.log(result);
+          const romfile = result.filePaths[0];
+          const rombuffer = await fs.readFile(romfile);
+          console.log(rombuffer);
+        } 
+      },
+      { type: 'separator' },
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ]
+  }
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);

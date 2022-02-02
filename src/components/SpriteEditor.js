@@ -5,6 +5,7 @@ const BASE_HEIGHT = 240;
 
 class SpriteEditor extends React.Component {
 	state = {
+		zoom: 1,
 		width: BASE_WIDTH,
 		height: BASE_HEIGHT
 	};
@@ -15,8 +16,8 @@ class SpriteEditor extends React.Component {
 	}
 
 	render() {
-		return <canvas id="sprite-editor" ref={this.canvasRef} width={this.props.zoom * BASE_WIDTH}
-			height={this.props.zoom * BASE_HEIGHT}></canvas>;
+		return <canvas ref={this.canvasRef} width={this.state.zoom * BASE_WIDTH}
+			height={this.state.zoom * BASE_HEIGHT}></canvas>;
 	}
 
 	componentDidMount() {
@@ -29,10 +30,9 @@ class SpriteEditor extends React.Component {
 
 	draw() {
 		const canvas = this.canvasRef.current;
+		console.log(canvas.height);
 		const ctx = canvas.getContext('2d');
-		ctx.fillRect(25, 25, 100, 100);
-		ctx.clearRect(45, 45, 60, 60);
-		ctx.strokeRect(50, 50, 50, 50);
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 }
 
