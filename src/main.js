@@ -1,5 +1,6 @@
 const { app, dialog, BrowserWindow, Menu } = require('electron');
 const fs = require('fs').promises;
+const { getRomData } = require('./lib/nes');
 
 let mainWindow;
 
@@ -71,7 +72,7 @@ const template = [
   {
     label: 'File',
     submenu: [
-      { 
+      {
         label: 'Open ROM',
         click: async () => {
           const result = await dialog.showOpenDialog({
@@ -82,9 +83,12 @@ const template = [
             ]
           });
           const romfile = result.filePaths[0];
-          const rombuffer = await fs.readFile(romfile);
-          mainWindow.webContents.send('rombuffer', rombuffer);
-        } 
+          const rom = await fs.readFile(romfile);
+          mainWindow.webContents.send('romload', {
+            rom,
+            romData: getRomData(rom)
+          });
+        }
       },
       { type: 'separator' },
       isMac ? { role: 'close' } : { role: 'quit' }
