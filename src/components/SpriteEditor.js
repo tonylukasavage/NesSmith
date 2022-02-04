@@ -8,7 +8,7 @@ class SpriteEditor extends React.Component {
 	state = {
 		rom: null,
 		romData: null,
-		zoom: 1,
+		zoom: 2,
 		width: BASE_WIDTH,
 		height: BASE_HEIGHT
 	};
@@ -47,19 +47,32 @@ class SpriteEditor extends React.Component {
 			return;
 		}
 
-		const tile = []
+
 		let pos = romData.chrrom.pos + 16;
-		for (let x = 0; x < 8; x++) {
-			const byte1 = rom[pos + x];
-			const byte2 = rom[pos + x + 8];
+		const palette = [
+			[0, 0, 0, 0x0],
+			[0xFF, 0, 0, 0xFF],
+			[0, 0xFF, 0, 0xFF],
+			[0, 0, 0xFF, 0xFF]
+		];
 
-			for (let b = 7; i >= 0; b--) {
-				tile[y][x] = byte1 >> b
+		const tile = ctx.createImageData(8, 8);
+		let offset = 0;
+		for (let y = 0; y < 8; y++) {
+			const byte1 = rom[pos + y];
+			const byte2 = rom[pos + y + 8];
+
+			for (let x = 0; x < 8; x++) {
+				const bit = Math.pow(2, 7 - x);
+				const shift = 7 - x;
+				const val = ((byte1 & bit) >> shift) + (2 * ((byte2 & bit) >> shift));
+				tile.data.set(palette[val], offset);
+				offset += 4;
 			}
-
-			const pixel = (byte1 >> 7) | (byte2 >> 6 & 0x10);
-			console.log(pixel);
 		}
+
+		console.log(tile);
+		ctx.putImageData(tile, 0, 0);
 	}
 }
 
